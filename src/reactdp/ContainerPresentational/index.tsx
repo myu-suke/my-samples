@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+// ロジックとUIの分離
+import React, { useEffect, useState } from "react";
 
 // types.ts
 export interface User {
@@ -17,12 +18,16 @@ interface UserDisplayProps {
   error: Error | null;
 }
 
-const UserDisplay: React.FC<UserDisplayProps> = ({ user, isLoading, error }) => {
+const UserDisplay: React.FC<UserDisplayProps> = ({
+  user,
+  isLoading,
+  error,
+}) => {
   if (isLoading) {
     return <p>Loading user data...</p>;
   }
   if (error) {
-    return <p style={{ color: 'red' }}>Error: {error.message}</p>;
+    return <p style={{ color: "red" }}>Error: {error.message}</p>;
   }
   if (!user) {
     return <p>No user data available.</p>;
@@ -36,7 +41,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ user, isLoading, error }) => 
   );
 };
 
-export  {UserDisplay};
+export { UserDisplay };
 
 // Container Component (UserContainer.tsx)
 // データの取得、状態管理、ロジックを担当
@@ -57,13 +62,16 @@ const UserContainer: React.FC<UserContainerProps> = ({ userId }) => {
     const fetchUser = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+        const response = await fetch(
+          `https://jsonplaceholder.typicode.com/users/${userId}`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data: User = await response.json();
         setUser(data);
-      } catch (err: any) { // errの型をanyとして扱うか、特定のError型で捕捉
+      } catch (err: any) {
+        // errの型をanyとして扱うか、特定のError型で捕捉
         setError(err);
       } finally {
         setIsLoading(false);
@@ -72,12 +80,10 @@ const UserContainer: React.FC<UserContainerProps> = ({ userId }) => {
     fetchUser();
   }, [userId]);
 
-  return (
-    <UserDisplay user={user} isLoading={isLoading} error={error} />
-  );
+  return <UserDisplay user={user} isLoading={isLoading} error={error} />;
 };
 
-export  {UserContainer};
+export { UserContainer };
 
 // Usage (App.tsx)
 // import React from 'react';
